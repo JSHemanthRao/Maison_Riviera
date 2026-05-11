@@ -1,0 +1,24 @@
+
+> jacob-and-co@0.1.0 start
+> next start --hostname 127.0.0.1 --port 3000
+
+   ▲ Next.js 15.5.7
+   - Local:        http://127.0.0.1:3000
+   - Network:      http://127.0.0.1:3000
+
+ ✓ Starting...
+ ✓ Ready in 1352ms
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Sharvex\JacobandCo2\.next\required-server-files.json'
+    at async L (C:\Sharvex\JacobandCo2\.next\server\app\watch\[slug]\page.js:1:4910) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Sharvex\\JacobandCo2\\.next\\required-server-files.json'
+}
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\Sharvex\JacobandCo2\.next\required-server-files.json'
+    at async (C:\Sharvex\JacobandCo2\.next\server\pages\_error.js:1:6810) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\Sharvex\\JacobandCo2\\.next\\required-server-files.json'
+}
