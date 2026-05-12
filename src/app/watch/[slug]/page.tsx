@@ -43,7 +43,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
     <div className="min-h-screen overflow-x-hidden bg-black text-[#F5F5F5]">
       <section className="relative flex min-h-screen items-end justify-center overflow-hidden pb-16 pt-32">
         {watch.youtubeId ? (
-          <div className="absolute inset-0 z-0 h-full w-full overflow-hidden opacity-85 brightness-75">
+          <div className="absolute inset-0 z-0 h-full w-full overflow-hidden opacity-100 brightness-110">
             <iframe
               src={`https://www.youtube.com/embed/${watch.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${watch.youtubeId}&controls=0&showinfo=0&modestbranding=1&disablekb=1&playsinline=1`}
               className="absolute left-1/2 top-1/2 min-h-[200%] min-w-[200%] -translate-x-1/2 -translate-y-1/2 object-cover"
@@ -56,7 +56,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             loop
             muted
             playsInline
-            className="absolute inset-0 h-full w-full object-cover opacity-85 brightness-75"
+            disablePictureInPicture
+            preload="metadata"
+            className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
           >
             <source src={watch.heroVideo} type="video/mp4" />
           </video>
@@ -67,7 +69,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             fill
             priority
             sizes="100vw"
-            className="object-cover p-8 opacity-85 brightness-95 animate-[slowZoom_24s_ease-out_forwards] md:p-20"
+            className="object-cover p-8 opacity-100 brightness-110 animate-[slowZoom_24s_ease-out_forwards] md:p-20"
           />
         )}
         <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.11),transparent_28rem),linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.84)_78%,#000_100%),linear-gradient(90deg,#000_0%,rgba(0,0,0,0.25)_50%,#000_100%)] pointer-events-none" />

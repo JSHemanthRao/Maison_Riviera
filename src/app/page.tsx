@@ -22,7 +22,9 @@ export default function Home() {
               loop
               muted
               playsInline
-              className="absolute inset-0 h-full w-full object-cover opacity-85 brightness-75 animate-[slowZoom_24s_ease-out_forwards]"
+              disablePictureInPicture
+              preload="metadata"
+              className="absolute inset-0 h-full w-full object-cover opacity-85 brightness-75 transform-gpu will-change-transform animate-[slowZoom_24s_ease-out_forwards]"
             >
               <source src={heroWatch.heroVideo} type="video/mp4" />
             </video>
@@ -101,7 +103,9 @@ export default function Home() {
           loop
           muted
           playsInline
-          className="absolute inset-0 h-full w-full object-cover opacity-70 brightness-110"
+          disablePictureInPicture
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover opacity-70 brightness-110 transform-gpu will-change-transform"
           data-gsap="parallax"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_45%,transparent_100%),linear-gradient(180deg,#000_0%,transparent_20%,transparent_80%,#000_100%)]" />

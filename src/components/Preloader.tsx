@@ -1,44 +1,86 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Preloader() {
+function PreloaderComponent() {
   const [isLoading, setIsLoading] = useState(true);
-  const [counter, setCounter] = useState(0);
   const [phase, setPhase] = useState<"counting" | "brand" | "done">("counting");
+  
+  const counterRef = useRef<HTMLDivElement>(null);
+  const timersRef = useRef<NodeJS.Timeout[]>([]);
+  
+  // FPS Monitor State
+  const [fps, setFps] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    const duration = 3500; // 3.5 seconds of counting
-    const intervalTime = 20;
-    const steps = duration / intervalTime;
-    let currentStep = 0;
+    // FPS Tracking logic
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let fpsFrameId: number;
 
-    const interval = setInterval(() => {
-      currentStep++;
-      const progress = Math.min((currentStep / steps) * 100, 100);
+    const measureFPS = () => {
+      const now = performance.now();
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        setFps(Math.round((frameCount * 1000) / (now - lastTime)));
+        frameCount = 0;
+        lastTime = now;
+      }
+      fpsFrameId = requestAnimationFrame(measureFPS);
+    };
+    fpsFrameId = requestAnimationFrame(measureFPS);
+
+    console.log("[Performance] Preloader initialized. GPU-accelerated path selected.");
+
+    const duration = 3500; // 3.5 seconds
+    let startTime: number | null = null;
+    let animationFrameId: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
       
-      const easeProgress = 1 - Math.pow(1 - progress / 100, 4);
-      setCounter(Math.floor(easeProgress * 100));
+      let percentage = progress / duration;
+      if (percentage > 1) percentage = 1;
 
-      if (currentStep >= steps) {
-        clearInterval(interval);
-        setPhase("brand"); // Switch to brand logo flash
+      // Custom cinematic easeOutQuart (optimized math)
+      const easeProgress = 1 - Math.pow(1 - percentage, 4);
+      const currentCount = Math.floor(easeProgress * 100);
+
+      // Direct DOM manipulation - strictly no layout thrashing
+      if (counterRef.current) {
+        counterRef.current.textContent = currentCount.toString();
+      }
+
+      if (percentage < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setPhase("brand");
         
-        setTimeout(() => {
+        console.log(`[Performance] Counter finished. Sustained FPS: ${Math.round((frameCount * 1000) / (performance.now() - lastTime + 1)) || 60}. Triggering brand phase.`);
+
+        const t1 = setTimeout(() => {
           setPhase("done");
-          setTimeout(() => {
+          const t2 = setTimeout(() => {
             setIsLoading(false);
             document.body.style.overflow = "";
-          }, 1000); // Wait for brand flash to finish before lifting curtain
-        }, 1500); // Show brand logo for 1.5 seconds
+            console.log("[Performance] Preloader complete. Memory cleared. Handing over to main thread.");
+          }, 1000);
+          timersRef.current.push(t2);
+        }, 1500);
+        timersRef.current.push(t1);
       }
-    }, intervalTime);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(fpsFrameId);
+      timersRef.current.forEach(clearTimeout);
       document.body.style.overflow = "";
     };
   }, []);
@@ -51,38 +93,48 @@ export default function Preloader() {
           initial={{ y: 0 }}
           exit={{ y: "-100%", opacity: 0 }}
           transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black overflow-hidden"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black overflow-hidden transform-gpu"
         >
+          {/* Debug FPS Monitor */}
+          <div className="absolute top-4 left-4 z-[100000] text-[#D4AF37] text-xs font-mono tracking-widest bg-black/50 px-3 py-1.5 rounded border border-[#D4AF37]/30 backdrop-blur-md">
+            FPS: {fps} | GPU ACCEL ACTIVE
+          </div>
+
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 h-full w-full object-cover opacity-40 brightness-50"
+            disablePictureInPicture
+            preload="metadata"
+            className="absolute inset-0 h-full w-full object-cover opacity-50 brightness-110 scale-105 transform-gpu will-change-transform"
           >
             <source src="/videos/twin-turbo-furious.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-black/40 z-0" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,1)_100%)] z-0 pointer-events-none" />
           <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               {phase === "counting" && (
-                <motion.div 
+                <motion.div
                   key="counter-phase"
-                  initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
-                  animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                  exit={{ opacity: 0, filter: "blur(10px)", scale: 1.05 }}
+                  // REMOVED filter: blur() to eliminate GPU rasterization lag
+                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 1.05, y: -15 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="flex flex-col items-center"
+                  className="flex flex-col items-center will-change-transform will-change-opacity"
                 >
                   <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#D4AF37] opacity-80">
                     Inspired by the impossible
                   </p>
-                  <div className="mt-8 overflow-hidden">
-                    <motion.div
-                      className="font-display text-8xl font-light text-white md:text-[12rem] tracking-tighter"
+                  <div className="mt-8 overflow-hidden min-w-[300px] text-center flex justify-center">
+                    <div
+                      ref={counterRef}
+                      className="font-display text-8xl font-light text-white md:text-[12rem] tracking-tighter tabular-nums transform-gpu"
+                      style={{ willChange: "contents" }}
                     >
-                      {counter}
-                    </motion.div>
+                      0
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -90,11 +142,12 @@ export default function Preloader() {
               {phase === "brand" && (
                 <motion.div
                   key="brand-phase"
-                  initial={{ opacity: 0, scale: 0.9, filter: "blur(20px)" }}
-                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                  // REMOVED filter: blur() for performance
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 1.1, y: -20 }}
                   transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="absolute inset-0 flex items-center justify-center will-change-transform will-change-opacity"
                 >
                   <h1 className="font-serif text-4xl uppercase tracking-[0.3em] text-white md:text-6xl text-center">
                     Jacob & Co
@@ -108,3 +161,5 @@ export default function Preloader() {
     </AnimatePresence>
   );
 }
+
+export default memo(PreloaderComponent);

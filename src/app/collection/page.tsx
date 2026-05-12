@@ -9,14 +9,17 @@ export default function CollectionPage() {
   return (
     <div className="min-h-screen bg-black">
       <section className="relative flex min-h-[72vh] items-end overflow-hidden pb-20 pt-36">
-        <Image
-          src="https://www.datocms-assets.com/99008/1761868839-casino-front-new.webp"
-          alt="Jacob & Co timepieces collection"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-70 brightness-110"
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          disablePictureInPicture
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
+        >
+          <source src="/videos/casino-tourbillon.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15),#000_96%),linear-gradient(90deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.15)_48%,rgba(0,0,0,0.8)_100%)]" />
         <div className="container relative z-10 mx-auto px-6">
           <motion.div
