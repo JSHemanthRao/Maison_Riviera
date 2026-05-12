@@ -57,9 +57,9 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
           <AnimatePresence mode="wait">
             <motion.div
               key={images[currentIndex]}
-              initial={{ opacity: 0, scale: 1.04, filter: "blur(18px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, scale: 0.98, filter: "blur(18px)" }}
+              initial={{ opacity: 0, scale: 1.035 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.985 }}
               transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
               className="absolute inset-0"
             >
@@ -132,9 +132,9 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
       <AnimatePresence>
         {isFullscreen && (
           <motion.div
-            initial={{ opacity: 0, filter: "blur(20px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, filter: "blur(20px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[80] bg-black/95 backdrop-blur-xl"
           >

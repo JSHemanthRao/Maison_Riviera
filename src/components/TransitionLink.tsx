@@ -1,7 +1,7 @@
 "use client";
 
 import Link, { LinkProps } from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 export const triggerPageTransition = () => {
@@ -12,21 +12,37 @@ interface TransitionLinkProps extends LinkProps {
   children: ReactNode;
   className?: string;
   href: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
-export default function TransitionLink({ children, href, className, ...props }: TransitionLinkProps) {
+export default function TransitionLink({ children, href, className, onClick, ...props }: TransitionLinkProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleTransition = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    onClick?.(e);
+    if (
+      e.defaultPrevented ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0
+    ) {
+      return;
+    }
+
+    const targetPathname = new URL(href, window.location.href).pathname;
+    if (targetPathname === pathname) {
+      return;
+    }
+
     e.preventDefault();
-    
-    // Trigger the exit curtain
     triggerPageTransition();
-    
-    // Wait for the curtain to cover the screen, then navigate
+
     setTimeout(() => {
       router.push(href);
-    }, 600); // 600ms matches the curtain animation duration
+    }, 420);
   };
 
   return (

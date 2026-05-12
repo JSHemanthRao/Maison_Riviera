@@ -1,5 +1,3 @@
-"use client";
-
 import { Watch } from "@/data/watches";
 import WatchCard from "./WatchCard";
 

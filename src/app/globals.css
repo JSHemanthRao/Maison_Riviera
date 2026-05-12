@@ -185,10 +185,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 @keyframes sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
 @keyframes slowZoom { 
-  0% { transform: scale(1); filter: brightness(1); } 
-  100% { transform: scale(1.15); filter: brightness(0.85); } 
+  0% { transform: scale(1); } 
+  100% { transform: scale(1.15); } 
 }
-@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(20px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); } }
+@keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes pageReveal { 0% { opacity: 0; transform: translateY(10px) scale(0.995); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes curtainIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes siteLoadRail {
+  0% { transform: translateX(-130%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(150%); }
+}
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -196,4 +203,28 @@ h1, h2, h3, h4, h5, h6 {
 
 .skip-preloader .preloader-container {
   display: none !important;
+}
+
+main > div > section:not(:first-child) {
+  content-visibility: auto;
+  contain-intrinsic-size: 900px;
+}
+
+@media (max-width: 767px), (hover: none) {
+  .glass,
+  .glass-luxury {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
 }

@@ -1,30 +1,47 @@
 "use client";
 
-import React, { useEffect, useState, useRef, memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { memo, useEffect, useRef, useState } from "react";
 
 function PreloaderComponent() {
   const [isLoading, setIsLoading] = useState(true);
-  const [phase, setPhase] = useState<"counting" | "brand" | "done">("counting");
+  const [phase, setPhase] = useState<"counting" | "brand">("counting");
 
   const counterRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
+    try {
+      if (sessionStorage.getItem("luxury-entry-preloader-seen") === "true") {
+        setIsLoading(false);
+        return;
+      }
+      sessionStorage.setItem("luxury-entry-preloader-seen", "true");
+    } catch {
+      // If storage is blocked, still show the entrance loader once for this mount.
+    }
+
     document.body.style.overflow = "hidden";
 
-    console.log("[Performance] Preloader initialized. GPU-accelerated path selected.");
-
-    const duration = 1500; // 1.5 seconds
+    const minimumWait = 2200;
+    const maximumWait = 8500;
+    const timers = timersRef.current;
+    let pageReady = document.readyState === "complete";
     let startTime: number | null = null;
     let animationFrameId: number;
+
+    const markPageReady = () => {
+      pageReady = true;
+    };
+
+    if (!pageReady) {
+      window.addEventListener("load", markPageReady, { once: true });
+    }
 
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = timestamp - startTime;
-
-      let percentage = progress / duration;
-      if (percentage > 1) percentage = 1;
+      const canEnterSite = (pageReady && progress >= minimumWait) || progress >= maximumWait;
+      const percentage = canEnterSite ? 1 : Math.min(0.94, progress / minimumWait);
 
       // Custom cinematic easeOutQuart (optimized math)
       const easeProgress = 1 - Math.pow(1 - percentage, 4);
@@ -35,20 +52,16 @@ function PreloaderComponent() {
         counterRef.current.textContent = currentCount.toString();
       }
 
-      if (percentage < 1) {
+      if (!canEnterSite) {
         animationFrameId = requestAnimationFrame(animate);
       } else {
         setPhase("brand");
 
-        console.log(`[Performance] Counter finished. Triggering brand phase.`);
-
-        // Single timeout to dismiss the entire preloader after brand reveals
         const t1 = setTimeout(() => {
           setIsLoading(false);
           document.body.style.overflow = "";
-          console.log("[Performance] Preloader complete.");
-        }, 1400);
-        timersRef.current.push(t1);
+        }, 1150);
+        timers.push(t1);
       }
     };
 
@@ -56,78 +69,57 @@ function PreloaderComponent() {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      timersRef.current.forEach(clearTimeout);
+      window.removeEventListener("load", markPageReady);
+      timers.forEach(clearTimeout);
       document.body.style.overflow = "";
     };
   }, []);
 
-  return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          key="preloader"
-          initial={{ y: 0 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="preloader-container fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black overflow-hidden transform-gpu"
-        >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            disablePictureInPicture
-            preload="metadata"
-            className="absolute inset-0 h-full w-full object-cover opacity-50 brightness-110 scale-105 transform-gpu will-change-transform"
-          >
-            <source src="/videos/twin-turbo-furious.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,1)_100%)] z-0 pointer-events-none" />
-          <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
-            <AnimatePresence>
-              {phase === "counting" && (
-                <motion.div
-                  key="counter-phase"
-                  initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 1.05, y: -15 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="flex flex-col items-center will-change-transform will-change-opacity absolute"
-                >
-                  <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#D4AF37] opacity-80">
-                    Inspired by the impossible
-                  </p>
-                  <div className="mt-8 overflow-hidden min-w-[300px] text-center flex justify-center">
-                    <div
-                      ref={counterRef}
-                      className="font-display text-8xl font-light text-white md:text-[12rem] tracking-tighter tabular-nums transform-gpu"
-                      style={{ willChange: "contents" }}
-                    >
-                      0
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+  if (!isLoading) {
+    return null;
+  }
 
-              {phase === "brand" && (
-                <motion.div
-                  key="brand-phase"
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 1.1, y: -20 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 flex items-center justify-center will-change-transform will-change-opacity"
-                >
-                  <h1 className="font-serif text-4xl uppercase tracking-[0.3em] text-white md:text-6xl text-center">
-                    Jacob & Co
-                  </h1>
-                </motion.div>
-              )}
-            </AnimatePresence>
+  return (
+    <div className="preloader-container fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden bg-black transform-gpu">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        disablePictureInPicture
+        preload="auto"
+        className="absolute inset-0 h-full w-full scale-105 object-cover opacity-50 brightness-110 transform-gpu will-change-transform"
+      >
+        <source src="/videos/twin-turbo-furious.mp4" type="video/mp4" />
+      </video>
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,1)_100%)]" />
+      <div className="absolute left-1/2 top-1/2 h-px w-[64vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#D4AF37]/55 to-transparent" />
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
+        {phase === "counting" && (
+          <div className="absolute flex animate-[fadeInUp_360ms_ease-out_both] flex-col items-center">
+            <p className="font-serif text-xs uppercase tracking-[0.4em] text-[#D4AF37] opacity-80">
+              Inspired by the impossible
+            </p>
+            <div className="mt-8 flex min-w-[300px] justify-center overflow-hidden text-center">
+              <div
+                ref={counterRef}
+                className="font-display text-8xl font-light tracking-normal text-white md:text-[12rem]"
+              >
+                0
+              </div>
+            </div>
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+
+        {phase === "brand" && (
+          <div className="absolute inset-0 flex animate-[fadeInUp_440ms_ease-out_both] items-center justify-center">
+            <h1 className="text-center font-serif text-4xl uppercase tracking-[0.3em] text-white md:text-6xl">
+              Jacob & Co
+            </h1>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

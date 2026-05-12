@@ -10,21 +10,33 @@ export default function CinematicEffects() {
   const ctxRef = useRef<gsap.Context | null>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
     gsap.registerPlugin(ScrollTrigger);
 
-    // A short timeout ensures React hydration completes before GSAP 
-    // injects inline styles, preventing hydration mismatch errors.
-    const timeoutId = setTimeout(() => {
+    const schedule =
+      "requestIdleCallback" in window
+        ? (callback: () => void) => window.requestIdleCallback(callback, { timeout: 900 })
+        : (callback: () => void) => window.setTimeout(callback, 120);
+
+    const cancel =
+      "cancelIdleCallback" in window
+        ? (id: number) => window.cancelIdleCallback(id)
+        : (id: number) => window.clearTimeout(id);
+
+    const idleId = schedule(() => {
       ctxRef.current = gsap.context(() => {
         gsap.utils.toArray<HTMLElement>("[data-gsap='reveal']").forEach((element) => {
           gsap.fromTo(
             element,
-            { autoAlpha: 0, y: 54, filter: "blur(16px)" },
+            { autoAlpha: 0, y: 36 },
             {
               autoAlpha: 1,
               y: 0,
-              filter: "blur(0px)",
-              duration: 1.2,
+              clearProps: "transform,opacity,visibility",
+              duration: 0.9,
               ease: "power4.out",
               scrollTrigger: {
                 trigger: element,
@@ -48,10 +60,10 @@ export default function CinematicEffects() {
           });
         });
       });
-    }, 100);
+    });
 
     return () => {
-      clearTimeout(timeoutId);
+      cancel(idleId);
       if (ctxRef.current) {
         ctxRef.current.revert();
       }

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import TransitionLink from "@/components/TransitionLink";
 import ProductGallery from "@/components/ProductGallery";
 import SpecsGrid from "@/components/SpecsGrid";
 import StorySection from "@/components/StorySection";
@@ -45,6 +45,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
         {watch.youtubeId ? (
           <div className="absolute inset-0 z-0 h-full w-full overflow-hidden opacity-100 brightness-110">
             <iframe
+              data-route-critical
               src={`https://www.youtube.com/embed/${watch.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${watch.youtubeId}&controls=0&showinfo=0&modestbranding=1&disablekb=1&playsinline=1`}
               className="absolute left-1/2 top-1/2 min-h-[200%] min-w-[200%] -translate-x-1/2 -translate-y-1/2 object-cover"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -52,6 +53,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
           </div>
         ) : watch.heroVideo ? (
           <video
+            data-route-critical
             autoPlay
             loop
             muted
@@ -64,6 +66,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
           </video>
         ) : (
           <Image
+            data-route-critical
             src={watch.heroImage}
             alt={`${watch.name} hero`}
             fill
@@ -124,9 +127,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             </div>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href="/contact" className="luxury-button">
+              <TransitionLink href="/contact" className="luxury-button">
                 <span>Request Appointment</span>
-              </Link>
+              </TransitionLink>
               <a href={watch.sourceUrl} target="_blank" rel="noreferrer" className="luxury-button border-white/20">
                 <span>Official Reference</span>
               </a>
@@ -170,9 +173,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
                 <p className="mb-4 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Related Watches</p>
                 <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">Continue the collection.</h2>
               </div>
-              <Link href="/collection" className="text-xs uppercase tracking-[0.26em] text-[#D4AF37] transition hover:text-white">
+              <TransitionLink href="/collection" className="text-xs uppercase tracking-[0.26em] text-[#D4AF37] transition hover:text-white">
                 All timepieces
-              </Link>
+              </TransitionLink>
             </div>
             <WatchGrid watches={related} variant="rail" />
           </div>

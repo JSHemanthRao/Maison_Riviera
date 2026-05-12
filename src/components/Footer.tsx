@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TransitionLink from "@/components/TransitionLink";
 
 export default function Footer() {
   return (
@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="container mx-auto px-6">
         <div className="grid gap-12 md:grid-cols-[1.3fr_0.7fr_0.7fr_0.9fr]">
           <div>
-            <Link href="/" className="inline-flex flex-col">
+            <TransitionLink href="/" className="inline-flex flex-col">
               <span className="font-serif text-3xl uppercase tracking-[0.18em] text-white">Jacob & Co</span>
               <span className="mt-1 text-[10px] uppercase tracking-[0.36em] text-white/45">Geneve</span>
-            </Link>
+            </TransitionLink>
             <p className="mt-7 max-w-md text-sm leading-7 text-white/45">
               A cinematic clone-style luxury experience inspired by the official Jacob & Co timepieces universe.
             </p>
@@ -60,9 +60,9 @@ function FooterGroup({ title, links }: { title: string; links: string[][] }) {
       <ul className="space-y-4 text-sm text-white/45">
         {links.map(([label, href]) => (
           <li key={href}>
-            <Link href={href} className="transition hover:text-[#D4AF37]">
+            <TransitionLink href={href} className="transition hover:text-[#D4AF37]">
               {label}
-            </Link>
+            </TransitionLink>
           </li>
         ))}
       </ul>

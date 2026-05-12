@@ -2,8 +2,7 @@
 
 import TransitionLink from "@/components/TransitionLink";
 import Magnetic from "@/components/Magnetic";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 
 const links = [
@@ -13,16 +12,40 @@ const links = [
 ];
 
 export default function Navbar() {
-  const { scrollY } = useScroll();
-  const backgroundColor = useTransform(scrollY, [0, 100], ["rgba(0,0,0,0)", "rgba(0,0,0,0.72)"]);
-  const borderColor = useTransform(scrollY, [0, 100], ["rgba(255,255,255,0)", "rgba(212,175,55,0.14)"]);
-  const backdropFilter = useTransform(scrollY, [0, 100], ["blur(0px)", "blur(18px)"]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      setIsScrolled(window.scrollY > 72);
+    };
+
+    const onScroll = () => {
+      if (!frame) {
+        frame = window.requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+    };
+  }, []);
 
   return (
-    <motion.header
-      style={{ backgroundColor, borderColor, backdropFilter }}
-      className="fixed left-0 right-0 top-0 z-50 border-b"
+    <header
+      className={`fixed left-0 right-0 top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-500 ${
+        isScrolled
+          ? "border-[#D4AF37]/15 bg-black/75 backdrop-blur-xl"
+          : "border-transparent bg-black/0 backdrop-blur-0"
+      }`}
     >
       <div className="container mx-auto flex h-24 items-center justify-between px-6">
         <Magnetic intensity={0.1}>
@@ -76,11 +99,8 @@ export default function Navbar() {
       </div>
 
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -16, filter: "blur(12px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -16, filter: "blur(12px)" }}
-          className="border-t border-white/10 bg-black/95 px-6 py-8 backdrop-blur-2xl md:hidden"
+        <div
+          className="animate-[fadeInUp_260ms_ease-out_both] border-t border-white/10 bg-black/95 px-6 py-8 md:hidden"
         >
           <div className="flex flex-col gap-7">
             {links.map((item) => (
@@ -94,8 +114,8 @@ export default function Navbar() {
               </TransitionLink>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.header>
+    </header>
   );
 }

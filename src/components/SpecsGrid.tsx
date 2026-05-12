@@ -1,18 +1,13 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { Specification } from '@/data/watches';
 
 export default function SpecsGrid({ specs }: { specs: Specification[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {specs.map((spec, idx) => (
-        <motion.div 
+        <div 
           key={idx}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+          data-gsap="reveal"
+          style={{ transitionDelay: `${Math.min(idx * 70, 280)}ms` }}
           className="glass-luxury group relative overflow-hidden p-8 transition-colors duration-500 hover:border-[#D4AF37]/45 md:p-10"
         >
           {/* Glassmorphism / Glow background */}
@@ -26,7 +21,7 @@ export default function SpecsGrid({ specs }: { specs: Specification[] }) {
               {spec.value}
             </p>
           </div>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

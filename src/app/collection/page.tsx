@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-import Image from "next/image";
 import WatchGrid from "@/components/WatchGrid";
 import { watches } from "@/data/watches";
 
@@ -10,6 +6,7 @@ export default function CollectionPage() {
     <div className="min-h-screen bg-black">
       <section className="relative flex min-h-[72vh] items-end overflow-hidden pb-20 pt-36">
         <video
+          data-route-critical
           autoPlay
           loop
           muted
@@ -22,12 +19,7 @@ export default function CollectionPage() {
         </video>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15),#000_96%),linear-gradient(90deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.15)_48%,rgba(0,0,0,0.8)_100%)]" />
         <div className="container relative z-10 mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 32, filter: "blur(18px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-5xl"
-          >
+          <div className="max-w-5xl animate-[fadeInUp_900ms_ease-out_120ms_both]">
             <p className="mb-5 text-xs uppercase tracking-[0.36em] text-[#D4AF37]">
               Jacob & Co Collections
             </p>
@@ -37,7 +29,7 @@ export default function CollectionPage() {
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/60">
               A complete luxury collection page with real Jacob & Co inspired lines, black-glass presentation, cinematic spacing, and gallery-led navigation into every dynamic watch page.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

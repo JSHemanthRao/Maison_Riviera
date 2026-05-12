@@ -1,8 +1,4 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import WatchGrid from "@/components/WatchGrid";
 import Magnetic from "@/components/Magnetic";
 import TransitionLink from "@/components/TransitionLink";
@@ -18,6 +14,7 @@ export default function Home() {
         <div className="absolute inset-0">
           {heroWatch.heroVideo ? (
             <video
+              data-route-critical
               autoPlay
               loop
               muted
@@ -30,6 +27,7 @@ export default function Home() {
             </video>
           ) : (
             <Image
+              data-route-critical
               src={heroWatch.images[2]}
               alt={`${heroWatch.name} cinematic hero`}
               fill
@@ -42,12 +40,7 @@ export default function Home() {
         </div>
 
         <div className="container relative z-10 mx-auto px-6 pt-24">
-          <motion.div
-            initial={{ opacity: 0, y: 36, filter: "blur(18px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-5xl"
-          >
+          <div className="max-w-5xl animate-[fadeInUp_900ms_ease-out_120ms_both]">
             <p className="mb-6 text-xs uppercase tracking-[0.38em] text-[#D4AF37] md:text-sm">
               Inspired by the impossible
             </p>
@@ -69,7 +62,7 @@ export default function Home() {
                 </TransitionLink>
               </Magnetic>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="absolute bottom-8 left-6 right-6 z-10 flex items-end justify-between text-xs uppercase tracking-[0.24em] text-white/45">
@@ -87,9 +80,9 @@ export default function Home() {
                 Watches that behave like cinema.
               </h2>
             </div>
-            <Link href="/collection" className="text-xs uppercase tracking-[0.26em] text-[#D4AF37] transition hover:text-white">
+            <TransitionLink href="/collection" className="text-xs uppercase tracking-[0.26em] text-[#D4AF37] transition hover:text-white">
               View all
-            </Link>
+            </TransitionLink>
           </div>
 
           <WatchGrid watches={featuredWatches} />

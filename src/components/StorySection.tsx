@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { Watch } from "@/data/watches";
 
@@ -22,8 +19,7 @@ export default function StorySection({ watch }: { watch: Watch }) {
               className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20"
               data-gsap="reveal"
             >
-              <motion.div
-                initial={false}
+              <div
                 className={`relative min-h-[520px] overflow-hidden border border-white/5 bg-[#050505] ${
                   index % 2 === 1 ? "lg:order-2" : ""
                 }`}
@@ -37,7 +33,7 @@ export default function StorySection({ watch }: { watch: Watch }) {
                   data-gsap="parallax"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/10" />
-              </motion.div>
+              </div>
 
               <div className={index % 2 === 1 ? "lg:order-1" : ""}>
                 <p className="mb-5 text-xs uppercase tracking-[0.32em] text-[#D4AF37]">

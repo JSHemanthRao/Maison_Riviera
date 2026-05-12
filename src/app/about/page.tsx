@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 
 export default function AboutPage() {
@@ -8,6 +5,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-black text-white">
       <section className="relative flex min-h-[82vh] items-end overflow-hidden pb-20 pt-36">
         <Image
+          data-route-critical
           src="https://www.datocms-assets.com/99008/1702316091-1-bugattichiron-inspo.webp"
           alt="Jacob & Co inspired watchmaking studio"
           fill
@@ -17,18 +15,13 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1),#000_92%),linear-gradient(90deg,#000,rgba(0,0,0,0.35),#000)]" />
         <div className="container relative z-10 mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 32, filter: "blur(18px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-5xl"
-          >
+          <div className="max-w-5xl animate-[fadeInUp_900ms_ease-out_120ms_both]">
             <p className="mb-5 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">About The House</p>
             <h1 className="font-display text-6xl leading-none text-white md:text-8xl">Inspired by the impossible.</h1>
             <p className="mt-8 max-w-3xl text-lg leading-8 text-white/60">
               Jacob & Co is known for turning high watchmaking into spectacle: automata, extreme sapphire construction, music boxes, roulette dials, triple-axis tourbillons, and gem-setting that feels architectural.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
