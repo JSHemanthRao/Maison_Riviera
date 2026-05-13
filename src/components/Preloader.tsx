@@ -51,9 +51,20 @@ function PreloaderComponent() {
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
-    // Note: No sessionStorage check here!
-    // This ensures the preloader ALWAYS plays on a hard refresh.
-    // Because it's in layout.tsx, it naturally won't play during internal Next.js soft routing.
+    try {
+      const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+      const isReload = navEntries.length > 0 && navEntries[0].type === "reload";
+      const hasSeen = sessionStorage.getItem("luxury-entry-preloader-seen");
+
+      if (hasSeen === "true" && !isReload) {
+        setIsLoading(false);
+        return;
+      }
+
+      sessionStorage.setItem("luxury-entry-preloader-seen", "true");
+    } catch {
+      // Ignore storage errors
+    }
 
     document.body.style.overflow = "hidden";
 
