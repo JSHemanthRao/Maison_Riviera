@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
@@ -10,7 +10,7 @@ interface ProductGalleryProps {
   title: string;
 }
 
-export default function ProductGallery({ images, title }: ProductGalleryProps) {
+function ProductGallery({ images, title }: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -187,3 +187,5 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
     </>
   );
 }
+
+export default memo(ProductGallery);

@@ -2,6 +2,7 @@ import Image from "next/image";
 import WatchGrid from "@/components/WatchGrid";
 import Magnetic from "@/components/Magnetic";
 import TransitionLink from "@/components/TransitionLink";
+import OptimizedVideo from "@/components/OptimizedVideo";
 import { watches } from "@/data/watches";
 
 export default function Home() {
@@ -13,8 +14,9 @@ export default function Home() {
       <section className="relative flex min-h-screen items-center overflow-hidden">
         <div className="absolute inset-0">
           {heroWatch.heroVideo ? (
-            <video
+            <OptimizedVideo
               data-route-critical
+              src={heroWatch.heroVideo}
               autoPlay
               loop
               muted
@@ -22,9 +24,7 @@ export default function Home() {
               disablePictureInPicture
               preload="metadata"
               className="absolute inset-0 h-full w-full object-cover opacity-85 brightness-75 transform-gpu will-change-transform animate-[slowZoom_24s_ease-out_forwards]"
-            >
-              <source src={heroWatch.heroVideo} type="video/mp4" />
-            </video>
+            />
           ) : (
             <Image
               data-route-critical
@@ -32,6 +32,7 @@ export default function Home() {
               alt={`${heroWatch.name} cinematic hero`}
               fill
               priority
+              fetchPriority="high"
               sizes="100vw"
               className="object-cover opacity-85 brightness-75 animate-[slowZoom_24s_ease-out_forwards]"
             />
@@ -90,7 +91,7 @@ export default function Home() {
       </section>
 
       <section className="relative overflow-hidden py-32 md:py-44">
-        <video
+        <OptimizedVideo
           src="/videos/godfather-ii.mp4"
           autoPlay
           loop

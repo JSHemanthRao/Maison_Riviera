@@ -1,32 +1,35 @@
 "use client";
 
-import { useRef, useState } from "react";
+import React, { useRef, memo } from "react";
 
 interface MagneticProps {
   children: React.ReactNode;
   intensity?: number;
 }
 
-export default function Magnetic({ children, intensity = 0.3 }: MagneticProps) {
+function Magnetic({ children, intensity = 0.3 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const boundsRef = useRef<DOMRect | null>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const captureBounds = () => {
     boundsRef.current = ref.current?.getBoundingClientRect() ?? null;
   };
 
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!boundsRef.current || window.matchMedia("(hover: none)").matches) return;
+    if (!boundsRef.current || !ref.current || window.matchMedia("(hover: none)").matches) return;
     const { clientX, clientY } = e;
     const { height, width, left, top } = boundsRef.current;
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
-    setPosition({ x: middleX * intensity, y: middleY * intensity });
+    
+    // Direct DOM manipulation to avoid React re-renders on mouse move (60fps lock)
+    ref.current.style.transform = `translate3d(${middleX * intensity}px, ${middleY * intensity}px, 0)`;
   };
 
   const reset = () => {
-    setPosition({ x: 0, y: 0 });
+    if (ref.current) {
+      ref.current.style.transform = `translate3d(0px, 0px, 0)`;
+    }
   };
 
   return (
@@ -35,10 +38,11 @@ export default function Magnetic({ children, intensity = 0.3 }: MagneticProps) {
       onMouseEnter={captureBounds}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
-      style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
-      className="inline-block transition-transform duration-300 ease-out"
+      className="inline-block transition-transform duration-300 ease-out will-change-transform"
     >
       {children}
     </div>
   );
 }
+
+export default memo(Magnetic);

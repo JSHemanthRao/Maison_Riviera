@@ -130,8 +130,8 @@ async function waitForRouteReady() {
 
 export default function PageTransition() {
   const pathname = usePathname();
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [label, setLabel] = useState("Preparing");
+  const [transitionState, setTransitionState] = useState<"idle" | "entering" | "loading" | "exiting">("idle");
+  const [label, setLabel] = useState("Calibrating Movement");
   const startPathRef = useRef<string | null>(null);
   const transitionIdRef = useRef(0);
   const fallbackTimerRef = useRef<number | null>(null);
@@ -144,11 +144,17 @@ export default function PageTransition() {
 
       startPathRef.current = window.location.pathname;
       transitionIdRef.current += 1;
-      setLabel("Preparing");
-      setIsTransitioning(true);
+      setLabel("Calibrating Movement");
+      setTransitionState("entering");
+
+      // After curtain closes, move to loading state
+      setTimeout(() => {
+        if (transitionIdRef.current) setTransitionState("loading");
+      }, 500);
 
       fallbackTimerRef.current = window.setTimeout(() => {
-        setIsTransitioning(false);
+        setTransitionState("exiting");
+        setTimeout(() => setTransitionState("idle"), 600);
         startPathRef.current = null;
       }, ROUTE_READY_TIMEOUT + 1800);
     };
@@ -163,7 +169,7 @@ export default function PageTransition() {
   }, []);
 
   useEffect(() => {
-    if (!isTransitioning) {
+    if (transitionState === "idle") {
       return;
     }
 
@@ -173,10 +179,10 @@ export default function PageTransition() {
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [isTransitioning]);
+  }, [transitionState]);
 
   useEffect(() => {
-    if (!isTransitioning || startPathRef.current === pathname) {
+    if (transitionState !== "loading" || startPathRef.current === pathname) {
       return;
     }
 
@@ -184,22 +190,27 @@ export default function PageTransition() {
     const transitionId = transitionIdRef.current;
 
     const finishTransition = async () => {
-      setLabel("Rendering");
+      setLabel("Synchronizing Complications");
       await withTimeout(waitForRouteReady(), ROUTE_READY_TIMEOUT);
 
       if (isCancelled || transitionId !== transitionIdRef.current) {
         return;
       }
 
-      setLabel("Entering");
-      await sleep(260);
+      setLabel("Unveiling Timepiece");
+      await sleep(200);
 
       if (!isCancelled && transitionId === transitionIdRef.current) {
         if (fallbackTimerRef.current) {
           window.clearTimeout(fallbackTimerRef.current);
         }
-        setIsTransitioning(false);
-        startPathRef.current = null;
+        setTransitionState("exiting");
+        setTimeout(() => {
+          if (transitionId === transitionIdRef.current) {
+            setTransitionState("idle");
+            startPathRef.current = null;
+          }
+        }, 700);
       }
     };
 
@@ -208,18 +219,38 @@ export default function PageTransition() {
     return () => {
       isCancelled = true;
     };
-  }, [pathname, isTransitioning]);
+  }, [pathname, transitionState]);
 
-  if (!isTransitioning) {
+  if (transitionState === "idle") {
     return null;
   }
 
+  // Curtain animation logic
+  const isExiting = transitionState === "exiting";
+
   return (
-    <div className="pointer-events-auto fixed inset-0 z-[9999] flex animate-[curtainIn_420ms_ease-out_both] items-center justify-center bg-black/96">
-      <div className="flex w-[min(78vw,520px)] flex-col items-center">
-        <p className="mb-6 font-serif text-xs uppercase tracking-[0.42em] text-[#D4AF37]">{label}</p>
-        <div className="relative h-px w-full overflow-hidden bg-white/10">
-          <div className="absolute inset-y-0 left-0 w-1/3 animate-[siteLoadRail_1.05s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+    <div className="pointer-events-auto fixed inset-0 z-[9999] overflow-hidden">
+      {/* The wipe panel */}
+      <div
+        className="absolute inset-0 bg-[#050505] transition-transform duration-700 ease-[0.76,0,0.24,1]"
+        style={{
+          transform: isExiting ? "translateY(-100%)" : transitionState === "entering" ? "translateY(100%)" : "translateY(0%)",
+        }}
+      />
+      
+      {/* Loading content inside the panel */}
+      <div 
+        className="absolute inset-0 flex items-center justify-center transition-opacity duration-300"
+        style={{
+          opacity: transitionState === "loading" ? 1 : 0,
+        }}
+      >
+        <div className="flex flex-col items-center">
+          <div className="relative size-12 overflow-hidden rounded-full border border-white/10">
+            <div className="absolute left-1/2 top-1/2 h-1/2 w-1/2 origin-top-left animate-[spin_1.5s_linear_infinite] bg-gradient-to-br from-[#D4AF37] to-transparent opacity-50" />
+            <div className="absolute inset-1 rounded-full bg-[#050505]" />
+          </div>
+          <p className="mt-6 font-serif text-[10px] uppercase tracking-[0.42em] text-[#D4AF37] opacity-80">{label}</p>
         </div>
       </div>
     </div>

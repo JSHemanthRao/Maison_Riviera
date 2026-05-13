@@ -1,12 +1,14 @@
 import WatchGrid from "@/components/WatchGrid";
+import OptimizedVideo from "@/components/OptimizedVideo";
 import { watches } from "@/data/watches";
 
 export default function CollectionPage() {
   return (
     <div className="min-h-screen bg-black">
       <section className="relative flex min-h-[72vh] items-end overflow-hidden pb-20 pt-36">
-        <video
+        <OptimizedVideo
           data-route-critical
+          src="/videos/casino-tourbillon.mp4"
           autoPlay
           loop
           muted
@@ -14,9 +16,7 @@ export default function CollectionPage() {
           disablePictureInPicture
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
-        >
-          <source src="/videos/casino-tourbillon.mp4" type="video/mp4" />
-        </video>
+        />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15),#000_96%),linear-gradient(90deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.15)_48%,rgba(0,0,0,0.8)_100%)]" />
         <div className="container relative z-10 mx-auto px-6">
           <div className="max-w-5xl animate-[fadeInUp_900ms_ease-out_120ms_both]">

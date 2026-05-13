@@ -5,6 +5,7 @@ import ProductGallery from "@/components/ProductGallery";
 import SpecsGrid from "@/components/SpecsGrid";
 import StorySection from "@/components/StorySection";
 import WatchGrid from "@/components/WatchGrid";
+import OptimizedVideo from "@/components/OptimizedVideo";
 import { getRelatedWatches, getWatchBySlug, watches } from "@/data/watches";
 
 export function generateStaticParams() {
@@ -52,8 +53,9 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             />
           </div>
         ) : watch.heroVideo ? (
-          <video
+          <OptimizedVideo
             data-route-critical
+            src={watch.heroVideo}
             autoPlay
             loop
             muted
@@ -61,9 +63,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             disablePictureInPicture
             preload="metadata"
             className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
-          >
-            <source src={watch.heroVideo} type="video/mp4" />
-          </video>
+          />
         ) : (
           <Image
             data-route-critical
@@ -71,6 +71,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             alt={`${watch.name} hero`}
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover p-8 opacity-100 brightness-110 animate-[slowZoom_24s_ease-out_forwards] md:p-20"
           />

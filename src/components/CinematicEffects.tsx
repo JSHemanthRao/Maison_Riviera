@@ -16,17 +16,7 @@ export default function CinematicEffects() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const schedule =
-      "requestIdleCallback" in window
-        ? (callback: () => void) => window.requestIdleCallback(callback, { timeout: 900 })
-        : (callback: () => void) => window.setTimeout(callback, 120);
-
-    const cancel =
-      "cancelIdleCallback" in window
-        ? (id: number) => window.cancelIdleCallback(id)
-        : (id: number) => window.clearTimeout(id);
-
-    const idleId = schedule(() => {
+    const timerId = setTimeout(() => {
       ctxRef.current = gsap.context(() => {
         gsap.utils.toArray<HTMLElement>("[data-gsap='reveal']").forEach((element) => {
           gsap.fromTo(
@@ -63,7 +53,7 @@ export default function CinematicEffects() {
     });
 
     return () => {
-      cancel(idleId);
+      clearTimeout(timerId);
       if (ctxRef.current) {
         ctxRef.current.revert();
       }
