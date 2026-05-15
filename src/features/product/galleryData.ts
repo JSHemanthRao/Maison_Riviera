@@ -7,14 +7,6 @@ export const watchGalleries: Record<string, string[]> = {
     "/images/watches/astronomia-5.webp",
     "/images/watches/astronomia-6.webp"
   ],
-  "astronomia": [
-    "/images/watches/astronomia-hero.webp",
-    "/images/watches/astronomia-2.webp",
-    "/images/watches/astronomia-3.webp",
-    "/images/watches/astronomia-4.webp",
-    "/images/watches/astronomia-5.webp",
-    "/images/watches/astronomia-6.webp"
-  ],
   "bugatti-chiron": [
     "/images/watches/bugatti-chiron-hero.webp",
     "/images/watches/bugatti-chiron-2.webp",
@@ -78,14 +70,6 @@ export const watchGalleries: Record<string, string[]> = {
     "/images/watches/twin-turbo-4.webp",
     "/images/watches/twin-turbo-5.webp",
     "/images/watches/twin-turbo-6.webp"
-  ],
-  "billionaire": [
-    "/images/watches/billionaire-hero.webp",
-    "/images/watches/billionaire-2.webp",
-    "/images/watches/billionaire-3.webp",
-    "/images/watches/billionaire-4.webp",
-    "/images/watches/billionaire-5.webp",
-    "/images/watches/billionaire-6.webp"
   ],
   "billionaire": [
     "/images/watches/billionaire-hero.webp",
