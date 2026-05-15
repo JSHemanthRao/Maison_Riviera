@@ -1,12 +1,12 @@
-import Image from 'next/image';
-import TransitionLink from '@/components/TransitionLink';
+import CmsImage from "@/components/server/CmsImage";
+import TransitionLink from "@/components/client/TransitionLink";
 
 export default function NotFound() {
   return (
     <div className="relative bg-[#000000] min-h-screen flex items-center justify-center text-white overflow-hidden">
       {/* Background Image / Texture */}
       <div className="absolute inset-0 z-0">
-        <Image
+        <CmsImage
           data-route-critical
           src="https://www.datocms-assets.com/99008/1698435765-1-astrotourb-inspo.webp"
           alt="404 Background"

@@ -1,12 +1,14 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import TransitionLink from "@/components/TransitionLink";
-import ProductGallery from "@/components/ProductGallery";
-import SpecsGrid from "@/components/SpecsGrid";
-import StorySection from "@/components/StorySection";
-import WatchGrid from "@/components/WatchGrid";
-import OptimizedVideo from "@/components/OptimizedVideo";
-import { getRelatedWatches, getWatchBySlug, watches } from "@/data/watches";
+import TransitionLink from "@/components/client/TransitionLink";
+import SpecsGrid from "@/features/product/components/SpecsGrid";
+import StorySection from "@/features/product/components/StorySection";
+import WatchGrid from "@/features/product/components/WatchGrid";
+import OptimizedVideo from "@/components/client/OptimizedVideo";
+import CmsImage from "@/components/server/CmsImage";
+import ImageGallery from "@/features/product/components/gallery/ImageGallery";
+import { getRelatedWatches, getWatchBySlug, watches } from "@/features/product/constants";
+import { watchVideos } from "@/constants/watchVideos";
+import { watchGalleries } from "@/features/product/galleryData";
 
 export function generateStaticParams() {
   return watches.map((watch) => ({
@@ -25,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: `${watch.name} | Jacob & Co Timepieces`,
+    title: `${watch.name} | Maison Riviera Timepieces`,
     description: watch.description,
   };
 }
@@ -55,7 +57,10 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
         ) : watch.heroVideo ? (
           <OptimizedVideo
             data-route-critical
-            src={watch.heroVideo}
+            style={{ viewTransitionName: `video-${watch.slug}` } as React.CSSProperties}
+            src={watchVideos[watch.slug] || watch.heroVideo}
+            poster={watch.heroImage}
+            priority
             autoPlay
             loop
             muted
@@ -65,12 +70,13 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
           />
         ) : (
-          <Image
+          <CmsImage
             data-route-critical
             src={watch.heroImage}
             alt={`${watch.name} hero`}
+            fallbackSlug={watch.slug}
             fill
-            priority
+            preload
             fetchPriority="high"
             sizes="100vw"
             className="object-cover p-8 opacity-100 brightness-110 animate-[slowZoom_24s_ease-out_forwards] md:p-20"
@@ -93,10 +99,11 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
 
       <section className="cinematic-bg py-24 md:py-32">
         <div className="container mx-auto grid gap-12 px-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
-          <div data-gsap="reveal" className="relative min-h-[520px] overflow-hidden border border-white/5 bg-[#050505]">
-            <Image
+          <div className="relative min-h-[520px] overflow-hidden border border-white/5 bg-[#050505]">
+            <CmsImage
               src={watch.images[0]}
               alt={`${watch.name} studio image`}
+              fallbackSlug={watch.slug}
               fill
               sizes="(min-width: 1024px) 45vw, 100vw"
               className="object-contain p-8 drop-shadow-2xl"
@@ -104,7 +111,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
 
-          <div data-gsap="reveal">
+          <div>
             <p className="mb-5 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Watch Details</p>
             <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">
               Built for the impossible.
@@ -141,7 +148,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
 
       <section className="border-y border-white/5 bg-[#050505] py-24 md:py-32">
         <div className="container mx-auto px-6">
-          <div data-gsap="reveal" className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="mb-16 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="mb-4 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Image Gallery</p>
               <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">Full cinematic gallery.</h2>
@@ -150,13 +157,16 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
               Browse macro angles, movement interiors, lifestyle scenes, and studio images. Open fullscreen for the complete frame.
             </p>
           </div>
-          <ProductGallery images={watch.images} title={watch.name} />
+          <ImageGallery 
+            images={watchGalleries[watch.slug.replace(/-/g, '_')] || watch.images} 
+            title={watch.name} 
+          />
         </div>
       </section>
 
       <section className="bg-black py-24 md:py-32">
         <div className="container mx-auto px-6">
-          <div data-gsap="reveal" className="mx-auto mb-16 max-w-4xl text-center">
+          <div className="mx-auto mb-16 max-w-4xl text-center">
             <p className="mb-4 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Specifications</p>
             <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">Technical detail.</h2>
           </div>
@@ -169,7 +179,7 @@ export default async function WatchPage({ params }: { params: Promise<{ slug: st
       {related.length > 0 && (
         <section className="border-t border-white/5 bg-[#050505] py-24 md:py-32">
           <div className="container mx-auto px-6">
-            <div data-gsap="reveal" className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
                 <p className="mb-4 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Related Watches</p>
                 <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">Continue the collection.</h2>

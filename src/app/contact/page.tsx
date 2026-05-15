@@ -1,18 +1,21 @@
-import Image from "next/image";
-import ContactForm from "@/components/ContactForm";
+import ContactForm from "@/components/server/ContactForm";
+import OptimizedVideo from "@/components/client/OptimizedVideo";
+import { watchVideos } from "@/constants/watchVideos";
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <section className="relative flex min-h-screen items-center overflow-hidden py-36">
-        <Image
+        <OptimizedVideo
           data-route-critical
-          src="https://www.datocms-assets.com/99008/1703273139-1-billionaire-iii-lifestyle.webp"
-          alt="Luxury watch appointment"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover opacity-28"
+          src={watchVideos["billionaire"] || "/videos/billionaire-iii.mp4"}
+          autoPlay
+          loop
+          muted
+          playsInline
+          disablePictureInPicture
+          preload="metadata"
+          className="absolute inset-0 h-full w-full object-cover opacity-40 brightness-90 transform-gpu will-change-transform"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,#000_0%,rgba(0,0,0,0.78)_45%,rgba(0,0,0,0.5)_100%),linear-gradient(180deg,#000,transparent,#000)]" />
 
@@ -26,7 +29,7 @@ export default function ContactPage() {
             <div className="mt-10 space-y-3 text-sm uppercase tracking-[0.18em] text-white/45">
               <p>48 East 57 Street, New York, NY 10022</p>
               <p>+1 (212) 719-5887</p>
-              <p>website.inquiries@jacobandco.com</p>
+              <p>website.inquiries@maisonriviera.com</p>
             </div>
           </div>
 

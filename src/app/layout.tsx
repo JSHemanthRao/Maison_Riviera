@@ -2,14 +2,9 @@ import type { Metadata } from "next";
 import type { Viewport } from "next";
 import { Bodoni_Moda, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import LenisProvider from "@/components/LenisProvider";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CinematicEffects from "@/components/CinematicEffects";
-import NoiseOverlay from "@/components/NoiseOverlay";
-import PageTransition from "@/components/PageTransition";
-import CursorGlow from "@/components/CursorGlow";
-import Preloader from "@/components/Preloader";
+import Navbar from "@/components/server/Navbar";
+import Footer from "@/components/server/Footer";
+import Preloader from "@/components/islands/Preloader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,9 +22,9 @@ const bodoni = Bodoni_Moda({
 });
 
 export const metadata: Metadata = {
-  title: "Jacob & Co Timepieces | Inspired By The Impossible",
+  title: "Maison Riviera Timepieces | Inspired By The Impossible",
   description:
-    "A cinematic luxury watch experience inspired by Jacob & Co grand complications, collections, galleries, and high watchmaking storytelling.",
+    "A cinematic luxury watch experience inspired by Maison Riviera grand complications, collections, galleries, and high watchmaking storytelling.",
 };
 
 export const viewport: Viewport = {
@@ -46,18 +41,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${bodoni.variable}`}>
       <body className="antialiased bg-background text-foreground">
-        <LenisProvider>
-          <Preloader />
-          <PageTransition />
-          <NoiseOverlay />
-          <CursorGlow />
-          <CinematicEffects />
-          <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </LenisProvider>
+        <Preloader />
+        <Navbar />
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

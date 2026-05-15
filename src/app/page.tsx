@@ -1,9 +1,8 @@
-import Image from "next/image";
-import WatchGrid from "@/components/WatchGrid";
-import Magnetic from "@/components/Magnetic";
-import TransitionLink from "@/components/TransitionLink";
-import OptimizedVideo from "@/components/OptimizedVideo";
-import { watches } from "@/data/watches";
+import WatchGrid from "@/features/product/components/WatchGrid";
+import TransitionLink from "@/components/client/TransitionLink";
+import OptimizedVideo from "@/components/client/OptimizedVideo";
+import CmsImage from "@/components/server/CmsImage";
+import { watches } from "@/features/product/constants";
 
 export default function Home() {
   const featuredWatches = watches.slice(0, 4);
@@ -17,6 +16,8 @@ export default function Home() {
             <OptimizedVideo
               data-route-critical
               src={heroWatch.heroVideo}
+              poster={heroWatch.heroImage}
+              priority
               autoPlay
               loop
               muted
@@ -26,12 +27,12 @@ export default function Home() {
               className="absolute inset-0 h-full w-full object-cover opacity-85 brightness-75 transform-gpu will-change-transform animate-[slowZoom_24s_ease-out_forwards]"
             />
           ) : (
-            <Image
+            <CmsImage
               data-route-critical
               src={heroWatch.images[2]}
               alt={`${heroWatch.name} cinematic hero`}
               fill
-              priority
+              preload
               fetchPriority="high"
               sizes="100vw"
               className="object-cover opacity-85 brightness-75 animate-[slowZoom_24s_ease-out_forwards]"
@@ -49,19 +50,15 @@ export default function Home() {
               Timepieces beyond imagination.
             </h1>
             <p className="mt-8 max-w-2xl text-lg leading-8 text-white/65 md:text-xl">
-              A cinematic exploration of Jacob &amp; Co&apos;s most impossible grand complications, built as a luxury digital experience with sweeping motion, deep black surfaces, and gold-lit detail.
+              A cinematic exploration of Maison Riviera&apos;s most impossible grand complications, built as a luxury digital experience with sweeping motion, deep black surfaces, and gold-lit detail.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Magnetic>
-                <TransitionLink href="/collection" className="luxury-button w-full sm:w-auto">
-                  <span>Discover Timepieces</span>
-                </TransitionLink>
-              </Magnetic>
-              <Magnetic>
-                <TransitionLink href={`/watch/${heroWatch.slug}`} className="luxury-button border-white/20 w-full sm:w-auto">
-                  <span>Enter The Hero</span>
-                </TransitionLink>
-              </Magnetic>
+              <TransitionLink href="/collection" className="luxury-button w-full sm:w-auto">
+                <span>Discover Timepieces</span>
+              </TransitionLink>
+              <TransitionLink href={`/watch/${heroWatch.slug}`} className="luxury-button border-white/20 w-full sm:w-auto">
+                <span>Enter The Hero</span>
+              </TransitionLink>
             </div>
           </div>
         </div>
@@ -74,7 +71,7 @@ export default function Home() {
 
       <section className="cinematic-bg py-28 md:py-36">
         <div className="container mx-auto px-6">
-          <div data-gsap="reveal" className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+          <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
               <p className="mb-4 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Featured</p>
               <h2 className="max-w-4xl font-display text-5xl leading-tight text-white md:text-7xl">
@@ -100,17 +97,16 @@ export default function Home() {
           disablePictureInPicture
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover opacity-70 brightness-110 transform-gpu will-change-transform"
-          data-gsap="parallax"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0.5)_45%,transparent_100%),linear-gradient(180deg,#000_0%,transparent_20%,transparent_80%,#000_100%)]" />
         <div className="container relative z-10 mx-auto px-6">
-          <div data-gsap="reveal" className="max-w-3xl">
+          <div className="max-w-3xl">
             <p className="mb-5 text-xs uppercase tracking-[0.34em] text-[#D4AF37]">House Language</p>
             <h2 className="font-display text-5xl leading-tight text-white md:text-7xl">
               Mechanical spectacle, edited with restraint.
             </h2>
             <p className="mt-8 text-lg leading-8 text-white/60">
-              The experience leans into Jacob &amp; Co&apos;s impossible watchmaking codes: sapphire transparency, automata, roulette, music boxes, tourbillons, diamond architecture, and a black-stage presentation that lets each object command the frame.
+              The experience leans into Maison Riviera&apos;s impossible watchmaking codes: sapphire transparency, automata, roulette, music boxes, tourbillons, diamond architecture, and a black-stage presentation that lets each object command the frame.
             </p>
           </div>
         </div>
@@ -118,7 +114,7 @@ export default function Home() {
 
       <section className="bg-[#050505] py-28 md:py-36">
         <div className="container mx-auto px-6">
-          <div data-gsap="reveal" className="mb-14 grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+          <div className="mb-14 grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-end">
             <p className="text-xs uppercase tracking-[0.34em] text-[#D4AF37]">Collections</p>
             <h2 className="font-display text-4xl leading-tight text-white md:text-6xl">
               Astronomia. Bugatti. Casino. Opera. Gotham. Billionaire.

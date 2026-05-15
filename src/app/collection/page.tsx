@@ -1,14 +1,18 @@
-import WatchGrid from "@/components/WatchGrid";
-import OptimizedVideo from "@/components/OptimizedVideo";
-import { watches } from "@/data/watches";
+import WatchGrid from "@/features/product/components/WatchGrid";
+import OptimizedVideo from "@/components/client/OptimizedVideo";
+import { watches } from "@/features/product/constants";
 
 export default function CollectionPage() {
+  const heroWatch = watches.find((watch) => watch.slug === "casino-tourbillon");
+
   return (
     <div className="min-h-screen bg-black">
-      <section className="relative flex min-h-[72vh] items-end overflow-hidden pb-20 pt-36">
+      <section className="relative flex min-h-screen items-end overflow-hidden pb-20 pt-36">
         <OptimizedVideo
           data-route-critical
           src="/videos/casino-tourbillon.mp4"
+          poster={heroWatch?.heroImage}
+          priority
           autoPlay
           loop
           muted
@@ -17,17 +21,17 @@ export default function CollectionPage() {
           preload="metadata"
           className="absolute inset-0 h-full w-full object-cover opacity-100 brightness-110 transform-gpu will-change-transform"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.15),#000_96%),linear-gradient(90deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.15)_48%,rgba(0,0,0,0.8)_100%)]" />
+        <div className="absolute inset-0 z-10 bg-[radial-gradient(circle_at_50%_20%,rgba(212,175,55,0.08),transparent_28rem),linear-gradient(180deg,rgba(0,0,0,0.1),rgba(0,0,0,0.9)_85%,#000_100%),linear-gradient(90deg,rgba(0,0,0,0.6)_0%,transparent_50%,rgba(0,0,0,0.6)_100%)] pointer-events-none" />
         <div className="container relative z-10 mx-auto px-6">
           <div className="max-w-5xl animate-[fadeInUp_900ms_ease-out_120ms_both]">
             <p className="mb-5 text-xs uppercase tracking-[0.36em] text-[#D4AF37]">
-              Jacob & Co Collections
+              Maison Riviera Collections
             </p>
             <h1 className="font-display text-5xl leading-none text-white sm:text-6xl md:text-8xl">
               Timepieces
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/60">
-              A complete luxury collection page with real Jacob & Co inspired lines, black-glass presentation, cinematic spacing, and gallery-led navigation into every dynamic watch page.
+              A complete luxury collection page with real Maison Riviera inspired lines, black-glass presentation, cinematic spacing, and gallery-led navigation into every dynamic watch page.
             </p>
           </div>
         </div>
@@ -35,7 +39,7 @@ export default function CollectionPage() {
 
       <section className="cinematic-bg pb-28 pt-10 md:pb-36">
         <div className="container mx-auto px-6">
-          <div data-gsap="reveal" className="mb-12 flex flex-col justify-between gap-6 border-y border-white/10 py-8 md:flex-row md:items-center">
+          <div className="mb-12 flex flex-col justify-between gap-6 border-y border-white/10 py-8 md:flex-row md:items-center">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">Showing</p>
               <p className="mt-2 font-serif text-2xl text-white">{watches.length} grand complications</p>

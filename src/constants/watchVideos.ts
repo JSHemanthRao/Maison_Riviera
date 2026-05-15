@@ -1,0 +1,21 @@
+export const watchVideos: Record<string, string> = {
+  astronomia: "/videos/astronomia-tourbillon.mp4",
+  "bugatti-chiron": "/videos/bugatti-chiron.mp4",
+  "casino-tourbillon": "/videos/casino-tourbillon.mp4",
+  "epic-x": "/videos/epic-x-skeleton.mp4",
+  "twin-turbo": "/videos/twin-turbo-furious.mp4",
+  billionaire: "/videos/billionaire-iii.mp4",
+  "opera-godfather": "/videos/opera-godfather.mp4",
+  "oil-pump": "/videos/oil-pump.mp4",
+  "gotham-city": "/videos/gotham-city.mp4",
+  "astronomia-solar": "/videos/astronomia-solar.mp4",
+  "epic-sf24": "/videos/epic-sf24.mp4",
+  "fleurs-de-jardin": "/videos/fleurs-de-jardin.mp4",
+  "caviar-tourbillon": "/videos/caviar-tourbillon.mp4",
+  "mystery-tourbillon": "/videos/mystery-tourbillon.mp4",
+  "brilliant-skeleton": "/videos/brilliant-skeleton.mp4",
+  "godfather-minute-repeater": "/videos/godfather-ii.mp4",
+  "astronomia-clarity-dragon": "/videos/astronomia-clarity-dragon.mp4",
+  dragon: "/videos/astronomia-clarity-dragon.mp4",
+  bugatti: "/videos/bugatti-chiron.mp4"
+};
